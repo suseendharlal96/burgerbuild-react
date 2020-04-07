@@ -1,4 +1,6 @@
 import React from "react";
+
+import Auxi from '../../hoc/Auxilary';
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 
@@ -77,7 +79,7 @@ class Burgerbuild extends React.Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
     return (
-      <div>
+      <Auxi>
         <div>
           <Burger ingredients={this.state.ingredients} />
         </div>
@@ -90,7 +92,7 @@ class Burgerbuild extends React.Component {
             disabled={disabledInfo}
           />
         </div>
-      </div>
+      </Auxi>
     );
   }
 }
