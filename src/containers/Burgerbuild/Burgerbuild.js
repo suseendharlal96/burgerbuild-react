@@ -1,8 +1,10 @@
 import React from "react";
 
-import Auxi from '../../hoc/Auxilary';
+import Auxi from "../../hoc/Auxilary";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import Summary from "../../components/Burger/OrderSummary/OrderSummary";
+import Modal from "../../components/UI/Modal/Modal";
 
 const PRICE = {
   salad: 1,
@@ -15,15 +17,21 @@ class Burgerbuild extends React.Component {
   state = {
     ingredients: {
       salad: 0,
-      cheese: 0,
-      meat: 0,
+      cheese: 1,
+      meat: 1,
       bacon: 0,
     },
     price: 2,
     purchasable: false,
+    purchased: false,
   };
 
+  componentDidMount() {
+    this.updatepurchase(this.state.ingredients);
+  }
+
   updatepurchase = (ingredients) => {
+    console.log(ingredients);
     const sum = Object.keys(ingredients)
       .map((igKey) => {
         return ingredients[igKey];
@@ -62,13 +70,21 @@ class Burgerbuild extends React.Component {
     };
     newIngredients[type] = updatedCount;
     const oldPrice = this.state.price;
-    const addedPrice = PRICE[type];
-    const updatedPrice = oldPrice - addedPrice;
+    const deductedPrice = PRICE[type];
+    const updatedPrice = oldPrice - deductedPrice;
     this.setState({
       ingredients: newIngredients,
       price: updatedPrice,
     });
     this.updatepurchase(newIngredients);
+  };
+
+  purchaseHandler = () => {
+    this.setState({ purchased: true });
+  };
+
+  closeModalHandler = () => {
+    this.setState({ purchased: false });
   };
 
   render() {
@@ -80,14 +96,19 @@ class Burgerbuild extends React.Component {
     }
     return (
       <Auxi>
+        <Modal show={this.state.purchased} closeModal={this.closeModalHandler}>
+          <Summary ingredients={this.state.ingredients} />
+        </Modal>
         <div>
           <Burger ingredients={this.state.ingredients} />
         </div>
         <div>
           <BuildControls
+            ingredients={this.state.ingredients}
             itemsAdded={this.additemsHandler}
             itemsRemoved={this.removeItemsHandler}
             purchase={this.state.purchasable}
+            purchased={this.purchaseHandler}
             price={this.state.price}
             disabled={disabledInfo}
           />
