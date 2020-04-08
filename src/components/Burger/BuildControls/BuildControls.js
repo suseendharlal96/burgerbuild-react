@@ -11,7 +11,6 @@ const buildControls = (props) => {
       type: ingredients[i],
     });
   }
-  console.log(controls);
   return (
     <div className={classes.BuildControls}>
       <p>

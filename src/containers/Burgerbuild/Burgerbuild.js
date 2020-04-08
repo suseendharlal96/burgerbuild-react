@@ -10,18 +10,18 @@ const PRICE = {
   salad: 1,
   cheese: 1,
   meat: 1,
-  bacon: 3,
+  bacon: 1,
 };
 
 class Burgerbuild extends React.Component {
   state = {
     ingredients: {
       salad: 0,
-      cheese: 1,
-      meat: 1,
+      cheese: 0,
+      meat: 0,
       bacon: 0,
     },
-    price: 2,
+    price: 0,
     purchasable: false,
     purchased: false,
   };
@@ -31,7 +31,6 @@ class Burgerbuild extends React.Component {
   }
 
   updatepurchase = (ingredients) => {
-    console.log(ingredients);
     const sum = Object.keys(ingredients)
       .map((igKey) => {
         return ingredients[igKey];
@@ -87,6 +86,10 @@ class Burgerbuild extends React.Component {
     this.setState({ purchased: false });
   };
 
+  confirm = () => {
+    alert("confirm");
+  };
+
   render() {
     const disabledInfo = {
       ...this.state.ingredients,
@@ -97,7 +100,12 @@ class Burgerbuild extends React.Component {
     return (
       <Auxi>
         <Modal show={this.state.purchased} closeModal={this.closeModalHandler}>
-          <Summary ingredients={this.state.ingredients} />
+          <Summary
+            price={this.state.price}
+            ingredients={this.state.ingredients}
+            closeModal={this.closeModalHandler}
+            confirm={this.confirm}
+          />
         </Modal>
         <div>
           <Burger ingredients={this.state.ingredients} />
