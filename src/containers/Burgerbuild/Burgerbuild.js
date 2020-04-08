@@ -5,6 +5,7 @@ import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Summary from "../../components/Burger/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
+import axios from "../../axios-orders";
 
 const PRICE = {
   salad: 1,
@@ -87,7 +88,24 @@ class Burgerbuild extends React.Component {
   };
 
   confirm = () => {
-    alert("confirm");
+    const obj = {
+      orders: {
+        meat: 1,
+        chicken: 2,
+      },
+      customer: {
+        name: "Susee",
+        email: "test@test.com",
+      },
+    };
+    axios
+      .post("/burgerOrders.json", obj)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   render() {
