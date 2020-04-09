@@ -1,5 +1,7 @@
 import React from "react";
 
-const Auxi = (props) => props.children;
+const Auxi = (props) => {
+  return props.children;
+};
 
 export default Auxi;

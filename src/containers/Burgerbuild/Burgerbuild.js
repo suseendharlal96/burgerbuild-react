@@ -16,19 +16,26 @@ const PRICE = {
 
 class Burgerbuild extends React.Component {
   state = {
-    ingredients: {
-      salad: 0,
-      cheese: 0,
-      meat: 0,
-      bacon: 0,
-    },
+    ingredients: null,
     price: 0,
     purchasable: false,
     purchased: false,
   };
 
   componentDidMount() {
-    this.updatepurchase(this.state.ingredients);
+    console.log(this.props);
+    axios
+      .get("/ingredients.json")
+      .then((res) => {
+        console.log(res);
+        this.setState({ ingredients: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    if (this.state.ingredients) {
+      this.updatepurchase(this.state.ingredients);
+    }
   }
 
   updatepurchase = (ingredients) => {
@@ -88,24 +95,22 @@ class Burgerbuild extends React.Component {
   };
 
   confirm = () => {
-    const obj = {
-      orders: {
-        meat: 1,
-        chicken: 2,
-      },
-      customer: {
-        name: "Susee",
-        email: "test@test.com",
-      },
-    };
-    axios
-      .post("/burgerOrders.json", obj)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+      queryParams.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    queryParams.push(
+      encodeURIComponent("price") + "=" + encodeURIComponent(this.state.price)
+    );
+    const queryString = queryParams.join("&");
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString,
+    });
   };
 
   render() {
@@ -115,32 +120,40 @@ class Burgerbuild extends React.Component {
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
-    return (
-      <Auxi>
-        <Modal show={this.state.purchased} closeModal={this.closeModalHandler}>
-          <Summary
-            price={this.state.price}
-            ingredients={this.state.ingredients}
+
+    let burger = <p>loading...</p>;
+    if (this.state.ingredients) {
+      burger = (
+        <Auxi>
+          <Modal
+            show={this.state.purchased}
             closeModal={this.closeModalHandler}
-            confirm={this.confirm}
-          />
-        </Modal>
-        <div>
-          <Burger ingredients={this.state.ingredients} />
-        </div>
-        <div>
-          <BuildControls
-            ingredients={this.state.ingredients}
-            itemsAdded={this.additemsHandler}
-            itemsRemoved={this.removeItemsHandler}
-            purchase={this.state.purchasable}
-            purchased={this.purchaseHandler}
-            price={this.state.price}
-            disabled={disabledInfo}
-          />
-        </div>
-      </Auxi>
-    );
+          >
+            <Summary
+              price={this.state.price}
+              ingredients={this.state.ingredients}
+              closeModal={this.closeModalHandler}
+              confirm={this.confirm}
+            />
+          </Modal>
+          <div>
+            <Burger ingredients={this.state.ingredients} />
+          </div>
+          <div>
+            <BuildControls
+              ingredients={this.state.ingredients}
+              itemsAdded={this.additemsHandler}
+              itemsRemoved={this.removeItemsHandler}
+              purchase={this.state.purchasable}
+              purchased={this.purchaseHandler}
+              price={this.state.price}
+              disabled={disabledInfo}
+            />
+          </div>
+        </Auxi>
+      );
+    }
+    return <div>{burger}</div>;
   }
 }
 
