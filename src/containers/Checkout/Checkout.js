@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 
 import CheckoutSummary from "../../components/Orders/CheckoutSummary/CheckoutSummary";
 import ContactForm from "./ContactForm/ContactForm";
+import Modal from "../../components/UI/Modal/Modal";
 
 class Checkout extends Component {
   state = {
@@ -13,6 +14,7 @@ class Checkout extends Component {
       bacon: 0,
     },
     price: 0,
+    continuePurchase: false,
   };
 
   componentDidMount() {
@@ -30,6 +32,16 @@ class Checkout extends Component {
     this.setState({ ingredients: ingredients });
     this.setState({ price: price });
   }
+
+  formSubmit = () => {
+    this.setState({ continuePurchase: true });
+    this.props.history.replace("/checkout/contact-form");
+  };
+
+  closeModalHandler = () => {
+    this.setState({ continuePurchase: false });
+  };
+
   render() {
     return (
       <div>
@@ -37,16 +49,21 @@ class Checkout extends Component {
           ingredients={this.state.ingredients}
           price={this.state.price}
           closeSummary={() => this.props.history.replace("/")}
-          continue={() => this.props.history.replace("/checkout/contact-form")}
+          continue={this.formSubmit}
         />
         <Route
           path={this.props.match.path + "/contact-form"}
           render={(props) => (
-            <ContactForm
-              ingredients={this.state.ingredients}
-              price={this.state.price}
-              {...props}
-            />
+            <Modal
+              show={this.state.continuePurchase}
+              closeModal={this.closeModalHandler}
+            >
+              <ContactForm
+                ingredients={this.state.ingredients}
+                price={this.state.price}
+                {...props}
+              />
+            </Modal>
           )}
         />
       </div>

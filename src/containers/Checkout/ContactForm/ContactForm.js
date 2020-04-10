@@ -61,7 +61,13 @@ class ContactData extends Component {
       },
     },
     loading: false,
+    ingredients: null,
   };
+
+  componentDidMount() {
+    console.log(this.props);
+    this.setState({ ingredients: this.props.ingredients });
+  }
 
   inputChangedHandler = (event, id) => {
     event.preventDefault();
@@ -85,15 +91,17 @@ class ContactData extends Component {
       price: this.props.price,
       customerDetails: formValue,
     };
+    // this.setState({ ingredients: this.props.ingredients });
+    console.log(this.state.ingredients);
     axios
       .post("/orders.json", order)
       .then((response) => {
-        this.props.history.push("/");
         this.setState({ loading: false });
+        this.props.history.replace("/success");
       })
       .catch((error) => {
-        console.log(error);
         this.setState({ loading: false });
+        console.log(error);
       });
   };
 

@@ -1,5 +1,5 @@
 .Button {
-  background-color: transparent;
+  border-radius: 15px;
   border: none;
   color: white;
   outline: none;
@@ -12,13 +12,14 @@
 
 .Button:first-of-type {
   margin-left: 0;
-  padding-left: 0;
 }
 
 .Success {
-  color: #5c9210;
+  color: #ffffff;
+  background-color: green;
 }
 
 .Danger {
-  color: #944317;
+  color: #ffffff;
+  background-color: red;
 }
